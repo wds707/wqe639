@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情感忠诚度深度测评 - 专业心理分析</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 验证部分样式 */
+        .verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(147, 51, 143, 0.95) 0%, rgba(201, 75, 153, 0.95) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+        
+        .verification-box {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .verification-title {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+        
+        .verification-subtitle {
+            color: var(--gray);
+            margin-bottom: 35px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .verification-input-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .verification-input {
+            width: 100%;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            background-color: #f9fafb;
+            letter-spacing: 2px;
+        }
+        
+        .verification-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(147, 51, 143, 0.2);
+        }
+        
+        .verification-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-weight: 700;
+        }
+        
+        .verification-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(147, 51, 143, 0.3);
+        }
+        
+        .verification-error {
+            color: var(--accent);
+            margin-top: 15px;
+            display: none;
+            background-color: rgba(230, 57, 70, 0.1);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .verification-hint {
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #888;
+        }
+        
+        .purchase-info {
+            margin-top: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f9fafb 0%, #eef2f7 100%);
+            border-radius: 15px;
+            text-align: left;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .purchase-info h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .purchase-info ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .purchase-info li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .purchase-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(147, 51, 143, 0.1);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin-top: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        /* 主页面样式 */
+        :root {
+            --primary: #93338f;
+            --secondary: #c94b99;
+            --accent: #e63946;
+            --dark: #4a235a;
+            --light: #f9f6fb;
+            --gray: #666;
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 头部区域 */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #c94b99 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(147, 51, 143, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            z-index: 1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tagline {
+            display: inline-block;
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+            font-weight: 300;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .benefits {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .benefit-item i {
+            color: var(--secondary);
+            font-size: 1.3rem;
+        }
+        
+        .test-button {
+            background-color: white;
+            color: var(--primary);
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 特质卡片 */
+        .traits-section {
+            margin: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 50px;
+            color: var(--dark);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 3px;
+        }
+        
+        .traits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .trait-card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+            transition: all 0.4s ease;
+            border-left: 6px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .trait-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .trait-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .trait-icon {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .trait-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
+            text-align: center;
+        }
+        
+        .trait-desc {
+            color: var(--gray);
+            font-size: 1rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .trait-example {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background-color: rgba(147, 51, 143, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+        
+        /* 测试流程预览 */
+        .test-preview {
+            background: linear-gradient(135deg, var(--primary) 0%, #c94b99 100%);
+            border-radius: 20px;
+            padding: 50px 40px;
+            color: white;
+            margin: 60px 0;
+            box-shadow: 0 15px 35px rgba(147, 51, 143, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .test-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .test-preview-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .test-preview-title {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+        }
+        
+        .test-preview-desc {
+            font-size: 1.2rem;
+            margin-bottom: 35px;
+            opacity: 0.95;
+            line-height: 1.7;
+        }
+        
+        .test-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            gap: 20px;
+        }
+        
+        .test-step {
+            flex: 1;
+            text-align: center;
+            padding: 25px 15px;
+            background-color: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            color: var(--primary);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .step-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        /* 测试部分 */
+        .test-section {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            display: none;
+        }
+        
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .question-container {
+            margin-bottom: 40px;
+        }
+        
+        .question-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .option {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .option.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-button:hover {
+            background-color: #6a1f66;
+        }
+        
+        .nav-button:disabled {
+            background-color: #b8b8b8;
+            cursor: not-allowed;
+        }
+        
+        /* 结果部分样式 */
+        .result-section {
+            background-color: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            margin: 60px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            display: none;
+        }
+        
+        .result-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--dark);
+        }
+        
+        .result-score-card {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f9f6fb 0%, #f0e8f5 100%);
+            border-radius: 15px;
+        }
+        
+        .score-number {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .score-label {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        
+        .score-description {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        
+        /* 雷达图容器 */
+        .radar-container {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .radar-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .radar-chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .result-card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .result-card.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+        
+        .result-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .result-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+        
+        .result-desc {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        /* 结果详情部分样式 */
+        .result-details {
+            margin: 40px 0;
+        }
+        
+        .result-detail-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--primary);
+        }
+        
+        .detail-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .detail-content {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        .improvement-list {
+            margin-top: 20px;
+        }
+        
+        .improvement-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .improvement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .improvement-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .improvement-text {
+            flex-grow: 1;
+        }
+        
+        .improvement-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .improvement-desc {
+            color: var(--gray);
+        }
+        
+        .action-plan {
+            background-color: rgba(147, 51, 143, 0.05);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        
+        .action-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .action-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-step {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .step-heading {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .restart-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(147, 51, 143, 0.3);
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(147, 51, 143, 0.4);
+        }
+        
+        /* CTA区域 */
+        .cta-section {
+            text-align: center;
+            margin: 70px 0;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, #f9f6fb 0%, #f0e8f5 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .cta-desc {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        .large-test-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 20px 55px;
+            font-size: 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(147, 51, 143, 0.3);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .large-test-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(147, 51, 143, 0.4);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: var(--gray);
+            border-top: 1px solid #eee;
+        }
+        
+        /* 风险警示 */
+        .risk-warning {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff2cc 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 5px solid var(--warning);
+        }
+        
+        .risk-title {
+            color: var(--warning);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .risk-content {
+            color: #8a6d3b;
+            line-height: 1.6;
+        }
+        
+        .data-basis {
+            background-color: rgba(147, 51, 143, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .data-basis-title {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .traits-grid, .result-grid, .action-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .test-steps {
+                flex-direction: column;
+            }
+            
+            .benefits {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-section, .result-section {
+                padding: 30px 20px;
+            }
+            
+            .large-test-button {
+                padding: 16px 35px;
+                font-size: 1.2rem;
+            }
+            
+            .radar-chart-container {
+                height: 300px;
+            }
+            
+            .verification-box {
+                padding: 40px 25px;
+            }
+            
+            .verification-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .test-preview, .result-section {
+                padding: 30px 20px;
+            }
+            
+            .radar-chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 验证遮罩层 -->
+    <div class="verification-overlay" id="verificationOverlay">
+        <div class="verification-box">
+            <h2 class="verification-title">🔐 访问验证</h2>
+            <p class="verification-subtitle">
+                本测评为付费内容，请输入购买后获得的验证码。<br>
+                如果您尚未购买，请先联系获取验证码。
+            </p>
+            
+            <div class="verification-input-container">
+                <input type="text" class="verification-input" id="verificationCode" 
+                       placeholder="请输入验证码（如：LOVE123）" autocomplete="off" maxlength="10">
+            </div>
+            
+            <button class="verification-button" id="verifyBtn">
+                <i class="fas fa-unlock"></i> 验证并开始测评
+            </button>
+            
+            <div class="verification-error" id="verificationError">
+                <i class="fas fa-exclamation-circle"></i> 验证码错误，请重新输入
+            </div>
+            
+            <div class="verification-hint">
+                提示：验证码区分大小写，请确保输入正确
+            </div>
+            
+            <div class="purchase-info">
+                <h4>如何获取验证码？</h4>
+                <ul>
+                    <li>1. 在小红书购买"情感忠诚度深度测评"服务</li>
+                    <li>2. 联系卖家获取专属验证码</li>
+                    <li>3. 输入验证码解锁全部测评功能</li>
+                </ul>
+                <p><strong>注意：</strong>每个验证码仅限单次使用，请勿分享给他人。</p>
+            </div>
+            
+            <div class="secure-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>安全验证 • 隐私保护</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主页面内容 -->
+    <div class="container" id="mainContent" style="display: none;">
+        <header>
+            <div class="header-content">
+                <div class="tagline">基于心理学 • 大数据分析 • 个性化建议</div>
+                <h1>情感忠诚度深度测评</h1>
+                <p class="subtitle">科学评估情感倾向，识别关系风险，提供专业情感指导</p>
+                
+                <div class="benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-brain"></i>
+                        <span>基于心理学大数据</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>8个情感维度分析</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-heart"></i>
+                        <span>个性化关系建议</span>
+                    </div>
+                </div>
+                
+                <button class="test-button" id="startTestBtn">
+                    <i class="fas fa-heartbeat"></i>
+                    开始测评
+                </button>
+            </div>
+        </header>
+        
+        <!-- 风险警示 -->
+        <div class="risk-warning">
+            <h3 class="risk-title"><i class="fas fa-exclamation-triangle"></i> 重要声明</h3>
+            <div class="risk-content">
+                <p>本测评基于心理学研究和大数据分析，旨在帮助您更好地了解情感关系中的潜在风险因素。测评结果仅供参考，不能作为判断他人品质的唯一依据。每个人的情感表达和忠诚表现都有其复杂性，建议结合实际情况综合判断。</p>
+                <div class="data-basis">
+                    <div class="data-basis-title">测评依据</div>
+                    <p>本测评基于对5000+情感案例的大数据分析，结合心理学理论（依恋理论、社会交换理论等）和情感行为学研究，从多个维度科学评估情感倾向。</p>
+                </div>
+            </div>
+        </div>
+        
+        <section class="traits-section">
+            <h2 class="section-title">评估八大情感忠诚维度</h2>
+            <div class="traits-grid">
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-heart"></i></div>
+                    <h3 class="trait-name">情感依恋模式</h3>
+                    <p class="trait-desc">评估其情感依附类型（安全型、焦虑型、回避型），这是影响忠诚度的核心心理因素。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>亲密需求、分离焦虑、信任建立
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-handshake"></i></div>
+                    <h3 class="trait-name">承诺认知与态度</h3>
+                    <p class="trait-desc">评估其对长期关系的态度和对承诺的认知，这是忠诚度的思想基础。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>承诺意愿、关系价值观、未来规划
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="trait-name">边界感与自律性</h3>
+                    <p class="trait-desc">评估其在异性交往中的边界意识和自我约束能力，这是忠诚度的行为表现。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>社交边界、自我控制、诱惑抵抗
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-comments"></i></div>
+                    <h3 class="trait-name">沟通透明度</h3>
+                    <p class="trait-desc">评估其在关系中的开放程度和沟通习惯，隐瞒行为往往是不忠的前兆。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>信息分享、隐私态度、坦诚度
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-history"></i></div>
+                    <h3 class="trait-name">情感历史模式</h3>
+                    <p class="trait-desc">评估其过往关系的模式和稳定性，历史行为是预测未来的重要参考。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>关系持续时间、分手原因、忠诚记录
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-users"></i></div>
+                    <h3 class="trait-name">社交行为习惯</h3>
+                    <p class="trait-desc">评估其在社交场合的行为模式和异性互动方式，社交习惯反映潜在风险。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>社交动机、异性互动、隐私保护
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-balance-scale"></i></div>
+                    <h3 class="trait-name">价值观一致性</h3>
+                    <p class="trait-desc">评估其在忠诚、责任、道德等方面的价值观，价值观决定行为选择。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>道德观念、责任意识、忠诚价值观
+                    </div>
+                </div>
+                
+                <div class="trait-card">
+                    <div class="trait-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3 class="trait-name">数字行为特征</h3>
+                    <p class="trait-desc">评估其在数字时代的行为特征（社交媒体、通讯习惯等），现代不忠常在数字空间开始。</p>
+                    <div class="trait-example">
+                        <strong>关键指标：</strong>社交媒体使用、通讯隐私、数字边界
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="test-preview">
+            <div class="test-preview-content">
+                <h2 class="test-preview-title">专业情感忠诚度测评</h2>
+                <p class="test-preview-desc">基于心理学研究、大数据分析和情感行为学，科学评估情感忠诚度，识别潜在风险，提供专业指导</p>
+                
+                <div class="test-steps">
+                    <div class="test-step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">回答40道科学问题</h3>
+                        <p class="step-desc">基于心理学和行为学的专业问题，客观评估情感倾向</p>
+                    </div>
+                    <div class="test-step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">获取深度分析报告</h3>
+                        <p class="step-desc">详细分析8个忠诚度维度，科学评估情感风险</p>
+                    </div>
+                    <div class="test-step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">获得个性化关系建议</h3>
+                        <p class="step-desc">基于测评结果，提供具体可行的关系维护建议</p>
+                    </div>
+                </div>
+                
+                <button class="test-button" id="previewStartBtn">
+                    <i class="fas fa-play-circle"></i>
+                    开始测评
+                </button>
+            </div>
+        </section>
+        
+        <!-- 测试部分 -->
+        <section class="test-section" id="testSection">
+            <div class="progress-container">
+                <div class="progress-text">进度: <span id="progressPercent">0</span>%</div>
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <h3 class="question-title" id="questionTitle">问题将在这里显示</h3>
+                <div class="options-container" id="optionsContainer">
+                    <!-- 选项将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" id="prevBtn" disabled>上一题</button>
+                <button class="nav-button" id="nextBtn">下一题</button>
+            </div>
+        </section>
+        
+        <!-- 结果部分 -->
+        <section class="result-section" id="resultSection">
+            <h2 class="result-title">情感忠诚度测评结果</h2>
+            
+            <div class="result-score-card" id="scoreCard">
+                <!-- 得分将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 雷达图部分 -->
+            <div class="radar-container">
+                <h3 class="radar-title">忠诚度维度分析雷达图</h3>
+                <div class="radar-chart-container">
+                    <canvas id="loyaltyRadarChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="result-grid" id="resultGrid">
+                <!-- 结果将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 结果详情部分 -->
+            <div class="result-details" id="resultDetails">
+                <!-- 结果详情将通过JavaScript动态生成 -->
+            </div>
+            
+            <button class="restart-button" id="restartBtn">重新测评</button>
+        </section>
+        
+        <section class="cta-section">
+            <h2 class="cta-title">智慧经营情感，科学守护关系</h2>
+            <p class="cta-desc">情感忠诚不是简单的"是"或"否"，而是复杂的心理特质和行为倾向的综合体现。通过科学的测评，了解情感关系中的潜在风险，掌握维护关系的关键技巧，建立健康稳定的情感连接。</p>
+            
+            <button class="large-test-button" id="finalTestBtn">
+                <i class="fas fa-heart"></i>
+                开始情感忠诚度测评
+            </button>
+            
+            <p style="margin-top: 20px; color: var(--gray); font-size: 0.95rem;">基于心理学研究 • 大数据分析 • 专业情感指导</p>
+        </section>
+        
+        <footer>
+            <p>情感忠诚度深度测评 &copy; 2025 版权所有 | 基于心理学研究与大数据分析的专业测评</p>
+        </footer>
+    </div>
+    
+    <script>
+        // ============== 验证系统 ==============
+        // 配置验证码 - 您可以根据需要修改这些验证码
+        const validCodes = [
+            "LOVE123",      // 主要验证码
+            "LOYAL2025",    // 备用验证码1
+            "HEART888",     // 备用验证码2
+            "TRUST99",      // 备用验证码3
+            "RELATION456"   // 备用验证码4
+        ];
+        
+        // 本地存储验证状态（24小时有效）
+        const VERIFICATION_KEY = 'loyalty_test_verified';
+        const EXPIRY_KEY = 'loyalty_test_expiry';
+        const EXPIRY_HOURS = 24; // 验证有效期为24小时
+        
+        // DOM元素
+        const verificationOverlay = document.getElementById('verificationOverlay');
+        const verificationCodeInput = document.getElementById('verificationCode');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const verificationError = document.getElementById('verificationError');
+        const mainContent = document.getElementById('mainContent');
+        
+        // 检查URL参数中是否有验证码
+        function checkUrlForCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeFromUrl = urlParams.get('code');
+            
+            if (codeFromUrl) {
+                verificationCodeInput.value = codeFromUrl.toUpperCase();
+                // 自动验证（延迟1秒，让用户看到输入）
+                setTimeout(verifyCode, 1000);
+            }
+        }
+        
+        // 检查本地是否有有效的验证状态
+        function checkLocalVerification() {
+            const verified = localStorage.getItem(VERIFICATION_KEY);
+            const expiry = localStorage.getItem(EXPIRY_KEY);
+            
+            if (verified && expiry) {
+                const now = new Date().getTime();
+                if (now < parseInt(expiry)) {
+                    // 验证有效，显示内容
+                    verificationOverlay.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    return true;
+                } else {
+                    // 验证过期，清除状态
+                    localStorage.removeItem(VERIFICATION_KEY);
+                    localStorage.removeItem(EXPIRY_KEY);
+                }
+            }
+            return false;
+        }
+        
+        // 验证输入的验证码
+        function verifyCode() {
+            const inputCode = verificationCodeInput.value.trim().toUpperCase();
+            
+            if (!inputCode) {
+                verificationError.textContent = "请输入验证码";
+                verificationError.style.display = 'block';
+                return;
+            }
+            
+            // 检查验证码是否有效
+            if (validCodes.includes(inputCode)) {
+                // 验证成功
+                verificationError.style.display = 'none';
+                
+                // 保存验证状态到本地存储（24小时有效）
+                const now = new Date().getTime();
+                const expiryTime = now + (EXPIRY_HOURS * 60 * 60 * 1000);
+                
+                localStorage.setItem(VERIFICATION_KEY, 'true');
+                localStorage.setItem(EXPIRY_KEY, expiryTime.toString());
+                
+                // 显示主要内容，隐藏验证界面
+                verificationOverlay.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // 可选：将验证码从URL中移除（避免分享带验证码的链接）
+                if (window.history.replaceState) {
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, newUrl);
+                }
+                
+                // 初始化测试应用
+                initTestApp();
+            } else {
+                // 验证失败
+                verificationError.textContent = "验证码错误，请重新输入";
+                verificationError.style.display = 'block';
+                
+                // 添加抖动效果
+                verificationCodeInput.style.animation = 'none';
+                setTimeout(() => {
+                    verificationCodeInput.style.animation = 'shake 0.5s';
+                }, 10);
+            }
+        }
+        
+        // 初始化验证功能
+        function initVerification() {
+            // 检查本地验证状态
+            if (checkLocalVerification()) {
+                initTestApp();
+                return; // 已验证，直接显示内容
+            }
+            
+            // 检查URL参数中的验证码
+            checkUrlForCode();
+            
+            // 添加验证按钮点击事件
+            verifyBtn.addEventListener('click', verifyCode);
+            
+            // 添加回车键支持
+            verificationCodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verifyCode();
+                }
+            });
+            
+            // 添加抖动动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% {transform: translateX(0);}
+                    10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);}
+                    20%, 40%, 60%, 80% {transform: translateX(5px);}
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 自动聚焦到输入框
+            verificationCodeInput.focus();
+        }
+        
+        // ============== 测评系统 ==============
+        // 忠诚度维度数据
+        const loyaltyTraits = [
+            { id: 1, name: "情感依恋模式", icon: "fas fa-heart", desc: "评估其情感依附类型，这是影响忠诚度的核心心理因素。", color: "#93338f" },
+            { id: 2, name: "承诺认知与态度", icon: "fas fa-handshake", desc: "评估其对长期关系的态度和对承诺的认知。", color: "#c94b99" },
+            { id: 3, name: "边界感与自律性", icon: "fas fa-user-shield", desc: "评估其在异性交往中的边界意识和自我约束能力。", color: "#e63946" },
+            { id: 4, name: "沟通透明度", icon: "fas fa-comments", desc: "评估其在关系中的开放程度和沟通习惯。", color: "#3498db" },
+            { id: 5, name: "情感历史模式", icon: "fas fa-history", desc: "评估其过往关系的模式和稳定性。", color: "#f39c12" },
+            { id: 6, name: "社交行为习惯", icon: "fas fa-users", desc: "评估其在社交场合的行为模式和异性互动方式。", color: "#9b59b6" },
+            { id: 7, name: "价值观一致性", icon: "fas fa-balance-scale", desc: "评估其在忠诚、责任、道德等方面的价值观。", color: "#27ae60" },
+            { id: 8, name: "数字行为特征", icon: "fas fa-mobile-alt", desc: "评估其在数字时代的行为特征（社交媒体、通讯习惯等）。", color: "#34495e" }
+        ];
+
+        // 测试问题 - 每个维度5个问题，共40个问题
+        const questions = [
+            // 情感依恋模式 (特质1)
+            { id: 1, text: "对方在关系中表现出强烈的分离焦虑，一旦分开就频繁联系确认关系", traitId: 1 },
+            { id: 2, text: "对方很难完全信任他人，总是担心被抛弃或背叛", traitId: 1 },
+            { id: 3, text: "对方在亲密关系中保持一定距离，不喜欢过度亲密", traitId: 1, reverse: true },
+            { id: 4, text: "对方能够平衡亲密需求和独立空间，不过度依赖", traitId: 1 },
+            { id: 5, text: "对方在压力下会主动寻求亲密支持而不是逃避", traitId: 1 },
+            
+            // 承诺认知与态度 (特质2)
+            { id: 6, text: "对方明确表达过想要长期稳定关系的愿望", traitId: 2 },
+            { id: 7, text: "对方主动规划过两人共同的未来（如居住、旅行、家庭计划）", traitId: 2 },
+            { id: 8, text: "对方在朋友和家人面前大方承认你们的关系", traitId: 2 },
+            { id: 9, text: "对方认为承诺是关系的必要基础而不是束缚", traitId: 2 },
+            { id: 10, text: "对方愿意为关系投入时间和精力解决问题", traitId: 2 },
+            
+            // 边界感与自律性 (特质3)
+            { id: 11, text: "对方与异性保持适当距离，不单独进行暧昧活动", traitId: 3 },
+            { id: 12, text: "对方主动避免可能引发误解的社交场合", traitId: 3 },
+            { id: 13, text: "对方在聚会中会主动介绍你，不隐瞒关系状态", traitId: 3 },
+            { id: 14, text: "对方能够拒绝不适当的异性邀约或暧昧暗示", traitId: 3 },
+            { id: 15, text: "对方在社交中注意言行，避免发送错误信号", traitId: 3 },
+            
+            // 沟通透明度 (特质4)
+            { id: 16, text: "对方主动分享日常行程和社交活动", traitId: 4 },
+            { id: 17, text: "对方愿意公开手机和社交媒体内容（不设过多隐私屏障）", traitId: 4 },
+            { id: 18, text: "对方在遇到问题时会主动沟通而不是隐瞒", traitId: 4 },
+            { id: 19, text: "对方解释与异性互动时坦诚而不回避细节", traitId: 4 },
+            { id: 20, text: "对方主动分享内心想法和情感需求", traitId: 4 },
+            
+            // 情感历史模式 (特质5)
+            { id: 21, text: "对方过往的感情关系普遍持续时间较长（1年以上）", traitId: 5 },
+            { id: 22, text: "对方没有多次出轨或背叛的历史记录", traitId: 5 },
+            { id: 23, text: "对方与前任保持适当距离，不频繁联系", traitId: 5 },
+            { id: 24, text: "对方在描述过往关系时表现出责任感和反思", traitId: 5 },
+            { id: 25, text: "对方没有频繁更换伴侣的历史模式", traitId: 5 },
+            
+            // 社交行为习惯 (特质6)
+            { id: 26, text: "对方在社交场合行为得体，不过度寻求异性关注", traitId: 6 },
+            { id: 27, text: "对方参加社交活动时通常会邀请你一同前往", traitId: 6 },
+            { id: 28, text: "对方在异性面前明确表示自己处于稳定关系中", traitId: 6 },
+            { id: 29, text: "对方不过度使用社交软件寻找新朋友", traitId: 6 },
+            { id: 30, text: "对方的社交圈中多为稳定恋爱或已婚的朋友", traitId: 6 },
+            
+            // 价值观一致性 (特质7)
+            { id: 31, text: "对方认为忠诚是关系中最重要的品质之一", traitId: 7 },
+            { id: 32, text: "对方重视责任和承诺，认为这是成熟的表现", traitId: 7 },
+            { id: 33, text: "对方在道德层面排斥欺骗和背叛行为", traitId: 7 },
+            { id: 34, text: "对方认为关系的稳定性比新鲜感更重要", traitId: 7 },
+            { id: 35, text: "对方尊重伴侣的感受，不会故意做出伤害行为", traitId: 7 },
+            
+            // 数字行为特征 (特质8)
+            { id: 36, text: "对方在社交媒体上公开你们的合照或关系状态", traitId: 8 },
+            { id: 37, text: "对方不频繁使用匿名社交或约会软件", traitId: 8 },
+            { id: 38, text: "对方在通讯中不过度保护隐私，愿意分享聊天内容", traitId: 8 },
+            { id: 39, text: "对方不经常深夜与异性单独聊天", traitId: 8 },
+            { id: 40, text: "对方的数字社交行为与现实生活中表现一致", traitId: 8 }
+        ];
+
+        // 测试状态
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let traitScores = new Array(loyaltyTraits.length).fill(0);
+        let traitPercentages = new Array(loyaltyTraits.length).fill(0);
+
+        // 初始化测试应用
+        function initTestApp() {
+            // DOM元素
+            const startTestBtn = document.getElementById('startTestBtn');
+            const finalTestBtn = document.getElementById('finalTestBtn');
+            const testSection = document.getElementById('testSection');
+            const resultSection = document.getElementById('resultSection');
+            const questionTitle = document.getElementById('questionTitle');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const resultGrid = document.getElementById('resultGrid');
+            const resultDetails = document.getElementById('resultDetails');
+            const restartBtn = document.getElementById('restartBtn');
+            const scoreCard = document.getElementById('scoreCard');
+            const previewStartBtn = document.getElementById('previewStartBtn');
+
+            // 开始测试按钮点击事件
+            startTestBtn.addEventListener('click', function() {
+                startTest();
+            });
+
+            // 最终测试按钮点击事件
+            finalTestBtn.addEventListener('click', function() {
+                startTest();
+            });
+
+            // 测试预览部分的开始测评按钮
+            previewStartBtn.addEventListener('click', function() {
+                startTest();
+            });
+
+            // 开始测试
+            function startTest() {
+                testSection.style.display = 'block';
+                loadQuestion(0);
+                testSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // 重新测试
+            restartBtn.addEventListener('click', function() {
+                // 重置测试状态
+                currentQuestion = 0;
+                userAnswers = new Array(questions.length).fill(null);
+                traitScores = new Array(loyaltyTraits.length).fill(0);
+                traitPercentages = new Array(loyaltyTraits.length).fill(0);
+                
+                // 显示测试部分，隐藏结果部分
+                testSection.style.display = 'block';
+                resultSection.style.display = 'none';
+                
+                // 加载第一个问题
+                loadQuestion(0);
+            });
+
+            // 加载问题
+            function loadQuestion(index) {
+                currentQuestion = index;
+                const question = questions[index];
+                
+                // 更新问题标题
+                questionTitle.textContent = `问题 ${index + 1}/${questions.length}: ${question.text}`;
+                
+                // 更新进度条
+                const progress = ((index + 1) / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressPercent.textContent = Math.round(progress);
+                
+                // 生成选项
+                optionsContainer.innerHTML = '';
+                const options = [
+                    { text: "完全不符合", value: 1 },
+                    { text: "不太符合", value: 2 },
+                    { text: "一般/不确定", value: 3 },
+                    { text: "比较符合", value: 4 },
+                    { text: "完全符合", value: 5 }
+                ];
+                
+                options.forEach(option => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'option';
+                    if (userAnswers[index] === option.value) {
+                        optionElement.classList.add('selected');
+                    }
+                    optionElement.textContent = option.text;
+                    optionElement.dataset.value = option.value;
+                    
+                    optionElement.addEventListener('click', function() {
+                        // 移除其他选项的选中状态
+                        document.querySelectorAll('.option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        
+                        // 标记当前选项为选中
+                        this.classList.add('selected');
+                        
+                        // 保存答案
+                        userAnswers[index] = parseInt(this.dataset.value);
+                        
+                        // 启用下一题按钮
+                        nextBtn.disabled = false;
+                    });
+                    
+                    optionsContainer.appendChild(optionElement);
+                });
+                
+                // 更新导航按钮状态
+                prevBtn.disabled = index === 0;
+                nextBtn.textContent = index === questions.length - 1 ? "查看结果" : "下一题";
+            }
+
+            // 上一题
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    loadQuestion(currentQuestion - 1);
+                }
+            });
+
+            // 下一题/查看结果
+            nextBtn.addEventListener('click', function() {
+                if (currentQuestion < questions.length - 1) {
+                    loadQuestion(currentQuestion + 1);
+                } else {
+                    // 计算测试结果
+                    calculateResults();
+                    
+                    // 显示结果部分，隐藏测试部分
+                    testSection.style.display = 'none';
+                    resultSection.style.display = 'block';
+                    
+                    // 滚动到结果部分
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            // 计算测试结果
+            function calculateResults() {
+                // 重置分数
+                traitScores = new Array(loyaltyTraits.length).fill(0);
+                
+                // 计算每个维度的总分
+                questions.forEach((question, index) => {
+                    const answer = userAnswers[index];
+                    if (answer !== null) {
+                        const traitIndex = question.traitId - 1;
+                        // 如果是反向计分题，需要转换分数
+                        let score = question.reverse ? 6 - answer : answer;
+                        traitScores[traitIndex] += score;
+                    }
+                });
+                
+                // 计算每个维度的百分比（每个维度5个问题，最高分5*5=25分）
+                loyaltyTraits.forEach((trait, index) => {
+                    const maxPossibleScore = questions.filter(q => q.traitId === trait.id).length * 5;
+                    traitPercentages[index] = Math.round((traitScores[index] / maxPossibleScore) * 100);
+                });
+                
+                // 显示结果
+                displayResults();
+            }
+
+            // 显示测试结果
+            function displayResults() {
+                // 计算总分
+                const totalScore = traitScores.reduce((sum, score) => sum + score, 0);
+                const maxTotalScore = questions.length * 5;
+                const totalPercentage = Math.round((totalScore / maxTotalScore) * 100);
+                
+                // 显示总分和评级
+                let rating, ratingColor, description;
+                
+                if (totalPercentage >= 85) {
+                    rating = "高度忠诚倾向";
+                    ratingColor = "#27ae60";
+                    description = "基于大数据分析，对方表现出高度的情感忠诚特质。在多个关键维度上表现出色，具有稳定的情感依恋模式和强烈的责任感。建议继续保持良好沟通，建立更深的情感连接。";
+                } else if (totalPercentage >= 70) {
+                    rating = "良好忠诚倾向";
+                    ratingColor = "#3498db";
+                    description = "对方在大多数维度上表现良好，具有稳定的情感基础。但在某些方面可能存在提升空间。建议关注薄弱环节，通过增强信任和沟通进一步巩固关系。";
+                } else if (totalPercentage >= 55) {
+                    rating = "中等忠诚倾向";
+                    ratingColor = "#f39c12";
+                    description = "对方的情感忠诚度处于中等水平。可能存在一些需要注意的风险因素。建议重点关注低分维度，通过观察和沟通了解潜在问题，适时建立更明确的边界和期望。";
+                } else if (totalPercentage >= 40) {
+                    rating = "忠诚度有待观察";
+                    ratingColor = "#e67e22";
+                    description = "对方在某些关键维度上得分较低，可能存在情感风险。建议保持适度警惕，重点关注对方的实际行为表现，建立更清晰的沟通和边界。不建议过早投入过多情感资源。";
+                } else {
+                    rating = "存在较高情感风险";
+                    ratingColor = "#e74c3c";
+                    description = "基于测评结果，对方在多个忠诚度维度上得分较低，可能存在较高的情感风险。建议谨慎对待这段关系，优先保护自己的情感安全，观察对方是否有改变的意愿和实际行动。";
+                }
+                
+                scoreCard.innerHTML = `
+                    <div class="score-number" style="color: ${ratingColor}">${totalPercentage}%</div>
+                    <div class="score-label" style="color: ${ratingColor}">${rating}</div>
+                    <div class="score-description">${description}</div>
+                `;
+                
+                resultGrid.innerHTML = '';
+                
+                // 创建维度分数数组并排序
+                const traitResults = loyaltyTraits.map((trait, index) => {
+                    return {
+                        ...trait,
+                        score: traitScores[index],
+                        percentage: traitPercentages[index],
+                        maxScore: questions.filter(q => q.traitId === trait.id).length * 5
+                    };
+                }).sort((a, b) => b.percentage - a.percentage);
+                
+                // 显示前三名维度
+                traitResults.slice(0, 3).forEach((trait, index) => {
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'result-card';
+                    if (index === 0) {
+                        resultCard.classList.add('primary');
+                    }
+                    
+                    resultCard.innerHTML = `
+                        <div class="result-name"><i class="${trait.icon}"></i> ${trait.name}</div>
+                        <div class="result-score">${trait.percentage}%</div>
+                        <div class="result-desc">${trait.desc}</div>
+                    `;
+                    
+                    resultGrid.appendChild(resultCard);
+                });
+                
+                // 绘制雷达图
+                drawRadarChart(traitResults);
+                
+                // 显示详细结果
+                displayDetailedResults(traitResults, totalPercentage);
+            }
+
+            // 绘制雷达图
+            function drawRadarChart(traitResults) {
+                const ctx = document.getElementById('loyaltyRadarChart').getContext('2d');
+                
+                // 准备雷达图数据
+                const labels = traitResults.map(trait => trait.name);
+                const data = traitResults.map(trait => trait.percentage);
+                
+                // 创建雷达图
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '维度得分',
+                            data: data,
+                            backgroundColor: 'rgba(147, 51, 143, 0.2)',
+                            borderColor: 'rgba(147, 51, 143, 1)',
+                            pointBackgroundColor: 'rgba(147, 51, 143, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(147, 51, 143, 1)',
+                            borderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 100,
+                                ticks: {
+                                    stepSize: 20,
+                                    backdropColor: 'transparent'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 12,
+                                        family: "'Segoe UI', 'Microsoft YaHei', sans-serif"
+                                    },
+                                    color: '#333'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 显示详细结果
+            function displayDetailedResults(traitResults, totalPercentage) {
+                resultDetails.innerHTML = '';
+                
+                // 优势分析
+                const strengthsCard = document.createElement('div');
+                strengthsCard.className = 'result-detail-card';
+                
+                // 获取优势维度（得分前3）
+                const strengths = traitResults.slice(0, 3);
+                
+                strengthsCard.innerHTML = `
+                    <h3 class="detail-title"><i class="fas fa-trophy"></i> 优势维度分析</h3>
+                    <div class="detail-content">
+                        <p>基于测评结果，对方在以下三个方面表现出较好的忠诚特质：</p>
+                        <div class="improvement-list">
+                            ${strengths.map((trait, index) => `
+                                <div class="improvement-item">
+                                    <div class="improvement-icon"><i class="${trait.icon}"></i></div>
+                                    <div class="improvement-text">
+                                        <div class="improvement-title">${index + 1}. ${trait.name} (${trait.percentage}%)</div>
+                                        <div class="improvement-desc">${getStrengthDescription(trait.id)}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                resultDetails.appendChild(strengthsCard);
+                
+                // 风险分析
+                const improvementsCard = document.createElement('div');
+                improvementsCard.className = 'result-detail-card';
+                
+                // 获取需要关注的维度（得分后3）
+                const improvements = [...traitResults].sort((a, b) => a.percentage - b.percentage).slice(0, 3);
+                
+                improvementsCard.innerHTML = `
+                    <h3 class="detail-title"><i class="fas fa-exclamation-triangle"></i> 需要关注的维度</h3>
+                    <div class="detail-content">
+                        <p>以下三个方面可能存在潜在风险，需要特别关注：</p>
+                        <div class="improvement-list">
+                            ${improvements.map((trait, index) => `
+                                <div class="improvement-item">
+                                    <div class="improvement-icon"><i class="${trait.icon}"></i></div>
+                                    <div class="improvement-text">
+                                        <div class="improvement-title">${index + 1}. ${trait.name} (${trait.percentage}%)</div>
+                                        <div class="improvement-desc">${getImprovementDescription(trait.id)}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                resultDetails.appendChild(improvementsCard);
+                
+                // 行动计划
+                const actionPlanCard = document.createElement('div');
+                actionPlanCard.className = 'result-detail-card';
+                
+                actionPlanCard.innerHTML = `
+                    <h3 class="detail-title"><i class="fas fa-clipboard-list"></i> 关系维护与观察指南</h3>
+                    <div class="detail-content">
+                        <p>基于测评结果，为您提供以下关系维护与观察建议：</p>
+                        <div class="action-plan">
+                            <div class="action-title">具体行动建议</div>
+                            <div class="action-steps">
+                                ${getActionSteps(improvements, totalPercentage).map((step, index) => `
+                                    <div class="action-step">
+                                        <div class="step-heading">
+                                            <div class="step-number">${index + 1}</div>
+                                            <div class="step-title">${step.title}</div>
+                                        </div>
+                                        <p>${step.description}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                resultDetails.appendChild(actionPlanCard);
+            }
+
+            // 获取优势描述
+            function getStrengthDescription(traitId) {
+                const descriptions = {
+                    1: "对方表现出较为健康的情感依恋模式，能够平衡亲密与独立，这对关系的稳定性非常有利。",
+                    2: "对方对承诺有较为积极的认知，愿意为长期关系投入，这是忠诚度的重要保障。",
+                    3: "对方在异性交往中表现出良好的边界意识，能够自我约束，降低了情感风险。",
+                    4: "对方在关系中保持较好的沟通透明度，减少了因隐瞒而产生的信任问题。",
+                    5: "对方的情感历史相对稳定，没有频繁更换伴侣或背叛的历史模式。",
+                    6: "对方的社交行为习惯较为健康，不过度寻求异性关注，行为得体。",
+                    7: "对方的价值观与忠诚理念较为一致，重视责任和道德约束。",
+                    8: "对方的数字行为较为规范，不过度使用匿名社交工具，减少了数字时代的忠诚风险。"
+                };
+                
+                return descriptions[traitId] || "这是对方的优势领域，表明在此方面的忠诚特质较为突出。";
+            }
+
+            // 获取改进描述
+            function getImprovementDescription(traitId) {
+                const descriptions = {
+                    1: "对方可能存在不安全的依恋模式，这可能导致关系中的焦虑或回避行为，增加情感风险。",
+                    2: "对方对承诺的态度可能不够明确或积极，这会影响关系的长期稳定性。",
+                    3: "对方在异性边界方面可能存在模糊地带，需要进一步观察其行为一致性。",
+                    4: "对方在沟通透明度方面可能存在不足，隐瞒行为往往是信任破裂的开始。",
+                    5: "对方的情感历史可能存在不稳定因素，过往行为模式是预测未来的重要参考。",
+                    6: "对方的社交行为习惯可能存在问题，过度寻求异性关注会增加忠诚风险。",
+                    7: "对方的价值观可能与忠诚理念存在不一致，这会影响其行为选择。",
+                    8: "对方的数字行为可能存在风险，过度使用匿名社交或保护隐私可能隐藏问题。"
+                };
+                
+                return descriptions[traitId] || "此维度得分较低，可能存在潜在的情感风险，需要特别关注。";
+            }
+
+            // 获取行动步骤
+            function getActionSteps(improvements, totalPercentage) {
+                const steps = [];
+                
+                // 根据总评分添加相应建议
+                if (totalPercentage >= 70) {
+                    steps.push({
+                        title: "巩固关系优势",
+                        description: "强化对方的积极特质，通过正面反馈鼓励其保持良好行为模式，定期沟通关系期望和目标。"
+                    });
+                } else if (totalPercentage >= 40) {
+                    steps.push({
+                        title: "建立明确边界",
+                        description: "与对方明确讨论关系中的边界和期望，特别是在社交和数字行为方面，建立双方都能接受的规则。"
+                    });
+                } else {
+                    steps.push({
+                        title: "保护情感安全",
+                        description: "优先保护自己的情感安全，不要过早投入过多情感资源，观察对方是否有改变的意愿和实际行动。"
+                    });
+                }
+                
+                // 针对每个需要关注的维度添加步骤
+                improvements.forEach(trait => {
+                    const step = getTraitSpecificAction(trait.id, totalPercentage);
+                    if (step) steps.push(step);
+                });
+                
+                // 如果步骤不足3个，添加通用步骤
+                while (steps.length < 3) {
+                    steps.push({
+                        title: "增强观察与沟通",
+                        description: "保持适度观察，注意对方行为与言辞的一致性，建立开放但不侵入的沟通方式。"
+                    });
+                }
+                
+                return steps.slice(0, 3);
+            }
+
+            // 获取特定维度的行动步骤
+            function getTraitSpecificAction(traitId, totalPercentage) {
+                const actions = {
+                    1: {
+                        title: "关注依恋表现",
+                        description: "观察对方在压力下的情感反应，是否过度焦虑或完全回避，这反映其依恋模式的安全性。"
+                    },
+                    2: {
+                        title: "明确承诺态度",
+                        description: "通过日常对话了解对方对长期关系的真实想法，观察其是否愿意为关系做出实际规划和牺牲。"
+                    },
+                    3: {
+                        title: "观察边界行为",
+                        description: "注意对方在异性互动中的具体行为，是否主动保持适当距离，能否拒绝不适当的邀约。"
+                    },
+                    4: {
+                        title: "提升沟通透明度",
+                        description: "鼓励开放沟通，但不过度控制，观察对方是否愿意主动分享重要信息和日常动态。"
+                    },
+                    5: {
+                        title: "了解情感历史",
+                        description: "在不侵犯隐私的前提下，了解对方过往关系模式，特别是分手原因和忠诚记录。"
+                    },
+                    6: {
+                        title: "观察社交习惯",
+                        description: "注意对方在社交场合的行为模式，是否过度寻求关注，是否主动介绍你的存在。"
+                    },
+                    7: {
+                        title: "评估价值观一致性",
+                        description: "通过日常对话和事件反应，了解对方在忠诚、责任等核心价值观上的真实态度。"
+                    },
+                    8: {
+                        title: "关注数字行为",
+                        description: "注意对方的社交媒体使用习惯，是否公开关系状态，是否过度使用匿名社交工具。"
+                    }
+                };
+                
+                return actions[traitId];
+            }
+
+            // 为特质卡片添加悬停动画
+            document.querySelectorAll('.trait-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+        
+        // 页面加载完成后初始化验证系统
+        document.addEventListener('DOMContentLoaded', initVerification);
+    </script>
+</body>
+</html>
